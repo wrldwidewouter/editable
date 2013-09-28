@@ -1,0 +1,98 @@
+.wrap {
+    padding: 25px;
+}
+
+.imageholder {
+    overflow: hidden;
+    /*display: inline;*/
+}
+
+.optionbar i {
+    color: #fff;
+    margin-right: 1px !important;
+    font-size: 13px;
+    border-radius: 0px !important;
+    float: right !important;
+}
+
+.optionbar {
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    background-color: #fff;
+    top: -34px;
+    left: 0;
+    background-color: #428BCA;
+
+    -webkit-transition: top 0.175s ease-in-out 0.1s;
+    -moz-transition: top 0.175s ease-in-out 0.1s;
+    -o-transition: top 0.175s ease-in-out 0.1s;
+    -ms-transition: top 0.175s ease-in-out 0.1s;
+    transition: top 0.175s ease-in-out 0.1s;
+}
+
+.optionbar-area {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    top: 0;
+    height: 34px;
+    background-color: #fff;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    filter: alpha(opacity=0);
+    opacity: 0;
+    display: none;
+}
+
+.edit-overlay {
+    display: none;
+    overflow: hidden;
+    position: absolute;
+    z-index: 997;
+    background-color: rgba(210, 230, 255, 0.3);
+    outline: 2px solid rgb(210, 230, 255);
+    min-height: 24px;
+    min-width: 60px;
+    top: 0;
+}
+
+.edit-button {
+    border-radius: 0px !important;
+}
+
+.imageholder.edit {
+    outline: 2px dashed lightblue;
+    z-index: 1;
+}
+
+.imageholder.edit:hover {
+    cursor: -moz-grab;
+}
+
+.ui-resizable-handle {
+    display: none !important;
+}
+
+.img-upload {
+    height: 0px;
+    width: 0px;
+    display: block;
+    overflow: hidden;
+}
+
+#preloader {
+    background-image: url("http://www.wearecuko.com/images/pre-loader.png");
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -15px; /* -1 * image width / 2 */
+    margin-top: -15px; /* -1 * image height / 2 */
+    display: block;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
+    filter: alpha(opacity=30);
+    opacity: 0.3;
+    display: none;
+    z-index: 99;
+}
