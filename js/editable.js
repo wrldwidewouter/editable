@@ -1,4 +1,7 @@
 $(window).load(function(){
+
+    var ajaxurl = "http://localhost/editable/ajax_mysql.php";
+
     var ImgObjConstr = function (image) {
 
         // *** Variables *****************************************************
@@ -299,15 +302,34 @@ $(window).load(function(){
         };
 
         var saveimg = function () {
-            console.log('save img with id:' + img.attr('id') );
-
             img.on('mouseenter.showoverlay', makeOverlay);
             img.siblings('.optionbar').css('top', -34);
             img.siblings('.optionbar-area').hide().off('mouseenter.showoptionbar', showOptionbar);
             box.removeClass('edit');
             img.siblings('.ui-resizable-handle').attr('style', 'display: none !important');
+            ajaxpost();
         };
+        var ajaxpost = function () {
+            console.log('Saving... ' + img.attr('id') );
 
+            var $id = img.attr('id'),
+                $type = 'IMG',         
+                $method = 'update_create',
+                $content = img.attr('src'); //nog checken of src dataurl is!!!
+            
+            $.post(ajaxurl, {method: $method, id: $id, content: $content, type: $type} )
+            .done(function() { ajaxsuccess();})
+            .fail(function() { $('.edit').addClass('ajaxfail');});
+            
+            function ajaxsuccess(){
+                // $('#status span.statustext').html('Saved!');
+                // $('#status span.statuspic').html('<i class="icon-ok"></i>');
+                // setTimeout(function(){
+                //     $('#status').hide();
+                // },1000);
+            } 
+                       
+        };
         // *** Events *****************************************
 
         box.on("resizestop", function (event, ui) {
@@ -400,7 +422,6 @@ $(window).load(function(){
 
         // sizable
         sizable(sizehandle);
-        console.log(this);
 
     };
 
