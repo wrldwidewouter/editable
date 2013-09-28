@@ -316,7 +316,7 @@ $(window).load(function(){
                 $type = 'IMG',         
                 $method = 'update_create',
                 $content = img.attr('src'); //nog checken of src dataurl is!!!
-            
+                
             $.post(ajaxurl, {method: $method, id: $id, content: $content, type: $type} )
             .done(function() { ajaxsuccess();})
             .fail(function() { $('.edit').addClass('ajaxfail');});
