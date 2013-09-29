@@ -313,11 +313,26 @@ $(window).load(function(){
             console.log('Saving... ' + img.attr('id') );
 
             var $id = img.attr('id'),
-                $type = 'IMG',         
+                $type = 'IMG',
+                $neww = box.width(),
+                $newh = box.height(),
+                $cropy = (img.position().top * -1),
+                $cropx = (img.position().left * -1),       
                 $method = 'update_create',
                 $content = img.attr('src'); //nog checken of src dataurl is!!!
                 
-            $.post(ajaxurl, {method: $method, id: $id, content: $content, type: $type} )
+            $.post(ajaxurl, {
+                method: $method, 
+                id: $id, 
+                content: $content, 
+                type: $type,
+                crop_start_x: $cropx,
+                crop_start_y: $cropy,
+                new_width: $neww,
+                new_height: $newh,
+                zoom_width: w,
+                zoom_height: h
+            })
             .done(function() { ajaxsuccess();})
             .fail(function() { $('.edit').addClass('ajaxfail');});
             
@@ -427,7 +442,8 @@ $(window).load(function(){
 
     //trigger custom event on mousedown outside
     $('body').on('mousedown', function (e) {
- 
+        e.stopPropagation;
+        
         var edit = $('.edit'),
             isinside = $(e.target).parents('.edit').length;
 
@@ -440,6 +456,7 @@ $(window).load(function(){
                 // trigger savetext event
             }
         }
+
     });
 
 

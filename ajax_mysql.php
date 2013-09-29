@@ -2,7 +2,18 @@
 <?php
 //sleep(1);
 
-// FUNCTIONS:
+// *** Variables ***
+$id = $_POST['id'];
+$content = $_POST['content'];
+$type = $_POST['type'];
+$crop_start_x = $_POST['crop_start_x'];
+$crop_start_y = $_POST['crop_start_y'];
+$new_width = $_POST['new_width'];
+$new_height = $_POST['new_height'];
+$zoom_width = $_POST['zoom_width'];
+$zoom_height = $_POST['zoom_height'];
+
+// *** Functions ***
 function id_exists($id){
 	$id = mysql_real_escape_string($id);
 	$query = mysql_query("SELECT COUNT(`id`) FROM `items` WHERE `id` = '$id'");
@@ -25,29 +36,28 @@ function create_item($item_data){
 	mysql_query("INSERT INTO `items` ($fields) VALUES ($data)");	
 }
 
-
+// *** Logic ***
 if (isset($_POST['method']) && $_POST['method'] == 'update_create'){
     
     require './database/connect.php';
-    
-    $id = $_POST['id'];
-    $content = $_POST['content'];
-    $type = $_POST['type'];
-    
+        
     if ($type == 'IMG'){  
-        
-	define('UPLOAD_DIR', 'images/');
-        $part = explode(";base64,", $content);
-        $img = $part[1];
-        $filetype = str_replace('data:image/', '', $part[0]);
-        $img = str_replace(' ', '+', $img);
-        $data = base64_decode($img);
+    	define('UPLOAD_DIR', 'images/');
         $uniq_id = uniqid();
-        $file = UPLOAD_DIR . $uniq_id . '.' . $filetype;      
-        $success = file_put_contents($file, $data);
-        
-        $content = $file;
-        
+        if (substr($content, 0, 5) == 'data:') {          
+            $part = explode(";base64,", $content);
+            $img = $part[1];
+            $filetype = str_replace('data:image/', '', $part[0]);
+            $img = str_replace(' ', '+', $img);
+            $data = base64_decode($img);   
+            $file = UPLOAD_DIR . $uniq_id . '.' . $filetype;      
+            $success = file_put_contents($file, $data); 
+            $content = $file;
+        }   else   {
+            $file = $content;
+            $filetype = substr(strrchr($content,'.'),1);
+        }
+
         if (extension_loaded('gd') && function_exists('gd_info')) {
             
             include("./includes/image-class.php");
@@ -56,7 +66,7 @@ if (isset($_POST['method']) && $_POST['method'] == 'update_create'){
             $cropObj = new resize($original);  
 
             //Resize image (options: exact, portrait, landscape, auto, crop)  
-            $cropObj -> resizeImage(500, 500,'landscape');  
+            $cropObj -> resizeImage($new_width, $new_height,'exact', $crop_start_x, $crop_start_y, $zoom_width, $zoom_height);  
 
             //Save image             
             $newfile = UPLOAD_DIR . $uniq_id . '_cropped.' . $filetype;

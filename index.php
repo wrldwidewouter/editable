@@ -28,7 +28,7 @@
 </head>
 <body>
     <div class="wrap"> 
-        <img id="1000" width="500px" height="431px" class="editable" src="<?php echo $items[1000]['content'];?>" />
+        <img id="1000" width="300px" height="174px" class="editable" src="<?php echo $items[1000]['content'];?>" />
         <img id="1001" width="500px" class="editable" src="<?php echo $items[1001]['content'];?>" />
         <img id="1002" height="300px" class="editable" src="<?php echo $items[1002]['content'];?>" />
         <img id="1003" class="editable" src="<?php echo $items[1003]['content'];?>" />

@@ -63,7 +63,7 @@
 
 			## --------------------------------------------------------
 
-			public function resizeImage($newWidth, $newHeight, $option="auto") //$crop_start_x=0, $crop_start_y=0
+			public function resizeImage($newWidth, $newHeight, $option="auto", $crop_start_x, $crop_start_y, $zoom_width, $zoom_height)
 			{
 				// *** Get optimal width and height - based on $option
 				$optionArray = $this->getDimensions($newWidth, $newHeight, $option);
@@ -72,10 +72,13 @@
 				$optimalHeight = $optionArray['optimalHeight'];
 
 
-				// *** Resample - create image canvas of x, y size
-				$this->imageResized = imagecreatetruecolor($optimalWidth, $optimalHeight);
-				imagecopyresampled($this->imageResized, $this->image, 0, 0, 0, 0, $optimalWidth, $optimalHeight, $this->width, $this->height);
+				// *** Resample - create image canvas of x, y size                         //canvas grootte: breedte, hoogte
+				// $this->imageResized = imagecreatetruecolor($optimalWidth, $optimalHeight);
+				$this->imageResized = imagecreatetruecolor($newWidth, $newHeight);
 
+				// imagecopyresampled($this->imageResized, $this->image, 0, 0, 0, 0, $optimalWidth, $optimalHeight, $this->width, $this->height);
+				// imagecopyresampled($this->imageResized, $this->image, 0, 0, l, t, afbeeldBreedt, afbeeldHoogte , $this->width, $this->height);
+				imagecopyresampled($this->imageResized, $this->image, 0, 0, $crop_start_x, $crop_start_y, $zoom_width, $zoom_height, $this->width, $this->height);
 
 				// *** if option is 'crop', then crop too
 				if ($option == 'crop') {
