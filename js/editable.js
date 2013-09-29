@@ -1,8 +1,10 @@
-$(window).load(function(){
+
+$(window).load(function() {
+    "use strict";
 
     var ajaxurl = "http://localhost/editable/ajax_mysql.php";
 
-    var ImgObjConstr = function (image) {
+    var ImgObjConstr = function(image) {
 
         // *** Variables *****************************************************
         var img = $(image),
@@ -10,7 +12,8 @@ $(window).load(function(){
             offt = img.offset().top,
             minw = img.width(),
             minh = img.height(),
-            w, h, box, ratio, ori, mode, sizehandle;
+            orisrc= img.attr('src').replace("-cropped",""),
+            w, h, box, ratio, ori, mode, sizehandle, $optionbar, $editoverlay;
 
             console.log(img.attr('id')); //*******tijdelijk
             console.log(offt+" "+offl);
@@ -47,7 +50,7 @@ $(window).load(function(){
         } else if (img.attr('height') !== undefined) {
             mode = 'size-X', sizehandle = 'e';
         } else if (img.attr('width') === undefined && img.attr('height') === undefined) {
-            mode = 'free', sizehandle = 's, e, se';
+            mode = 'free',sizehandle = 's, e, se';
         }
 
         // *** Build *********************************************************
@@ -63,6 +66,7 @@ $(window).load(function(){
         img.before('<div class="optionbar-area"></div>');
         img.before('<div class="optionbar btn-group"></div>');
         img.before('<div id="preloader"></div>');
+
         $optionbar = img.siblings('.optionbar');
         $optionbar.prepend('<input type="file" name="img-upload" class="img-upload" />');
         $optionbar.prepend('<i class="icon-zoom-in btn btn-primary"></i>');
@@ -195,6 +199,7 @@ $(window).load(function(){
 
         var editmode = function (e) {
             e.stopPropagation();
+
             $(e.target).parents('.edit-overlay')
                 .hide()
                 .siblings('img')
@@ -213,7 +218,10 @@ $(window).load(function(){
                     .attr('style', 'display: none !important');
             }
         };
-
+        var loadOriginal = function () {
+            console.log('Original img loaded!');
+            img.attr('src', orisrc);
+        };
 
         var showOptionbar = function () {
             box.find('.optionbar').css('top', 0);
@@ -241,7 +249,7 @@ $(window).load(function(){
 
         var setimg = function (image, source) {
 
-            newimg = new Image();
+            var newimg = new Image();
             newimg.src = source,
 
             newimg.onload = function () {
@@ -256,11 +264,9 @@ $(window).load(function(){
                 resetsize();
                 this.box = image.parents('.imageholder'),
                 this.ratio = newimg.height / newimg.width;
-                var boxwidth = newimg.box.width(),
-                    boxheight = newimg.box.height();
 
                 setTimeout(function () {
-                    if (mode == "fixed") {
+                    if (mode === "fixed") {
                         bestfit(newimg.ratio);
                         updatetools();
                     } else {
@@ -286,7 +292,7 @@ $(window).load(function(){
             var bar = box.find('.optionbar');
 
             var icon = bar.find('.icon-zoom-out');
-            if (w == minw || h == minh) {
+            if (w === minw || h === minh) {
                 icon.addClass('disabled');
             } else {
                 icon.removeClass('disabled');
@@ -317,21 +323,22 @@ $(window).load(function(){
                 $neww = box.width(),
                 $newh = box.height(),
                 $cropy = (img.position().top * -1),
-                $cropx = (img.position().left * -1),       
+                $cropx = (img.position().left * -1),
                 $method = 'update_create',
                 $content = img.attr('src'); //nog checken of src dataurl is!!!
                 
             $.post(ajaxurl, {
-                method: $method, 
-                id: $id, 
-                content: $content, 
+                method: $method,
+                id: $id,
+                content: $content,
                 type: $type,
                 crop_start_x: $cropx,
                 crop_start_y: $cropy,
                 new_width: $neww,
                 new_height: $newh,
                 zoom_width: w,
-                zoom_height: h
+                zoom_height: h,
+                original: orisrc
             })
             .done(function() { ajaxsuccess();})
             .fail(function() { $('.edit').addClass('ajaxfail');});
@@ -342,9 +349,10 @@ $(window).load(function(){
                 // setTimeout(function(){
                 //     $('#status').hide();
                 // },1000);
-            } 
+            }
                        
         };
+
         // *** Events *****************************************
 
         box.on("resizestop", function (event, ui) {
@@ -377,6 +385,7 @@ $(window).load(function(){
 
         //edit
         box.find('.edit-button').on('click', editmode);
+        box.find('.edit-button').one('click', loadOriginal);
 
         // file icon, trigger file input
         box.find('.optionbar .icon-folder-open').mousedown(function (e) {
@@ -405,7 +414,9 @@ $(window).load(function(){
         if (box.get(0).addEventListener) {
             box.get(0).addEventListener("mousewheel", onscroll, false);
             box.get(0).addEventListener("DOMMouseScroll", onscroll, false);
-        } else box.get(0).attachEvent("onmousewheel", onscroll);
+        } else {
+            box.get(0).attachEvent("onmousewheel", onscroll);
+        }
         
         function onscroll(e) {
             if ( $(this).hasClass('edit') ){
@@ -423,8 +434,8 @@ $(window).load(function(){
                     $(this).css('cursor',grab);
                 } else {
                     $(this).css('cursor','auto');
-                }          
-            }   
+                }
+            }
         }
 
         // Trigger saveimg function on saveimg event
@@ -453,7 +464,7 @@ $(window).load(function(){
                 var img = edit.find('img');
                 $(img).trigger('saveimg');
             } else {
-                // trigger savetext event
+                console.log('trigger savetext event'); // text save
             }
         }
 
@@ -463,14 +474,14 @@ $(window).load(function(){
     //init
     $(function () {
 
-        ImgObj = [];
+        var ImgObj = [];
 
         $('.editable').each(function () {
 
             if (this.tagName === 'IMG') {
                 ImgObj.push(new ImgObjConstr(this));
             } else {
-                //text edit
+                console.log('text edit'); //text edit
             }
         });
 

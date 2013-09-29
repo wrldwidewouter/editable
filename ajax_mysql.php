@@ -12,6 +12,8 @@ $new_width = $_POST['new_width'];
 $new_height = $_POST['new_height'];
 $zoom_width = $_POST['zoom_width'];
 $zoom_height = $_POST['zoom_height'];
+$original_path = $_POST['original'];
+echo '$original_path is: '. $original_path;
 
 // *** Functions ***
 function id_exists($id){
@@ -50,13 +52,15 @@ if (isset($_POST['method']) && $_POST['method'] == 'update_create'){
             $filetype = str_replace('data:image/', '', $part[0]);
             $img = str_replace(' ', '+', $img);
             $data = base64_decode($img);   
-            $file = UPLOAD_DIR . $uniq_id . '.' . $filetype;      
+            $file = UPLOAD_DIR . 'bbbbbbbbbbb' . $uniq_id . '.' . $filetype;      
             $success = file_put_contents($file, $data); 
-            $content = $file;
+            echo $file;
         }   else   {
-            $file = $content;
-            $filetype = substr(strrchr($content,'.'),1);
+            $filetype = substr(strrchr($original_path,'.'),1);
+            $file = UPLOAD_DIR . 'bbbbbbbbbbb' . $uniq_id . '.' . $filetype;    
+            rename($original_path, $file);
         }
+            echo '<br> $file is: '. $file;
 
         if (extension_loaded('gd') && function_exists('gd_info')) {
             
@@ -69,7 +73,7 @@ if (isset($_POST['method']) && $_POST['method'] == 'update_create'){
             $cropObj -> resizeImage($new_width, $new_height,'exact', $crop_start_x, $crop_start_y, $zoom_width, $zoom_height);  
 
             //Save image             
-            $newfile = UPLOAD_DIR . $uniq_id . '_cropped.' . $filetype;
+            $newfile = UPLOAD_DIR . 'bbbbbbbbbbb' . $uniq_id . '-cropped.' . $filetype;
             $cropObj -> saveImage($newfile, 100);  
             
             $content = $newfile;
