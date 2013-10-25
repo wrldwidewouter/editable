@@ -1,4 +1,12 @@
 <!DOCTYPE html>
+<?php
+    require './database/connect.php';
+    $query = "SELECT * FROM `items`"; 
+    $result = mysql_query("SELECT * FROM `items`");
+    while($row = mysql_fetch_assoc($result)){     
+         $items[$row["id"]] = $row; //row key as id
+    }
+?>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -20,10 +28,10 @@
 </head>
 <body>
     <div class="wrap"> 
-        <img id="e1000" width="500px" height="431px" class="editable" src="http://farm3.staticflickr.com/2034/2111931266_f82e1f1baa.jpg" />
-        <img id="e1001" width="500px" class="editable" src="http://farm5.staticflickr.com/4093/4869267441_56066e64d2_b.jpg" />
-        <img id="e1002" height="300px" class="editable" src="http://farm9.staticflickr.com/8482/8247685380_5737ecd786_c.jpg" />
-        <img id="e1003" class="editable" src="http://farm3.staticflickr.com/2515/3898977183_78f33b7cbf_z.jpg" />
+        <img id="1000" width="300px" height="174px" class="editable" src="<?php echo $items[1000]['content'];?>" />
+        <img id="1001" width="500px" class="editable" src="<?php echo $items[1001]['content'];?>" />
+        <img id="1002" height="300px" class="editable" src="<?php echo $items[1002]['content'];?>" />
+        <img id="1003" class="editable" src="<?php echo $items[1003]['content'];?>" />
     </div>    
 
 </body>
